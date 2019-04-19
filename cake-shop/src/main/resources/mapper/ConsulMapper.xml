@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.cake.shop.mappers.ConsulMappers">
+    <!--
+    com.cake.shop.entity.Consul
+    -->
+
+    <insert id="insertAnAdmin">
+        INSERT INTO
+        consul (account,cspassword)
+        VALUES
+        (#{account},#{cspassword})
+    </insert>
+
+    <select id="foundAllAdmin" resultType="com.cake.shop.entity.Consul">
+        SELECT csid,account,cspassword FROM consul
+    </select>
+
+    <select id="selectAdminByAccount" resultType="com.cake.shop.entity.Consul">
+        SELECT csid,account,cspassword FROM consul WHERE
+        account=#{account}
+    </select>
+
+    <!--往蛋糕表中增加1个新蛋糕-->
+    <insert id="adminInsertOneCake">
+        INSERT INTO
+        angel_cake
+        (cakename,caketype,price,supplier,amount)
+        VALUES
+        (#{cakename},#{caketype},#{price},#{supplier},#{amount})
+    </insert>
+
+    <!--根据名字删除1个蛋糕-->
+    <delete id="deletedAngelCakeByName">
+        DELETE
+        FROM
+        angel_cake
+        WHERE
+        cakename=#{cakename}
+    </delete>
+
+    <!--根据acid修改蛋糕资料-->
+    <update id="updateAngelCakeByAcid">
+        UPDATE
+        angel_cake
+        SET
+        cakename=#{cakename},
+        caketype=#{caketype},
+        price=#{price},
+        supplier=#{supplier},
+        amount=#{amount}
+        WHERE
+        acid=#{acid}
+    </update>
+
+    <delete id="deleByAcid">
+        DELETE FROM angel_cake WHERE acid=#{acid}
+    </delete>
+
+    <update id="updateAngelaCakeByAcid">
+        UPDATE
+        angel_cake
+        SET
+        cakename=#{cakename},
+        caketype=#{caketype},
+        price=#{price},
+        supplier=#{supplier},
+        amount=#{amount}
+        WHERE
+        acid=#{acid}
+    </update>
+
+    <update id="updateAmountByAcid">
+        UPDATE
+        angel_cake
+        SET
+        amount=#{amount}
+        WHERE
+        acid = #{acid}
+    </update>
+
+    <update id="setCancelStatusById">
+        UPDATE
+        customer
+        SET
+        cancel_status=#{cancelStatus}
+        WHERE
+        id=#{id}
+    </update>
+
+    <!--根据多个id将用户表中多行`cancel_status`设为0或1-->
+    <update id="setCancelByVolumeId" parameterType="java.lang.Integer">
+        UPDATE
+        customer
+        SET
+        cancel_status=#{cancelStatus}
+        WHERE
+        id
+        IN (<foreach collection="array" item="id" separator=",">
+        #{id}
+    </foreach>)
+    </update>
+
+    <!--根据多个id删除多个用户-->
+    <delete id="volumesDeleteByIds" parameterType="java.lang.Integer">
+        DELETE
+        FROM
+        customer
+        WHERE
+        id
+        IN(<foreach collection="array" item="id" separator=",">
+        #{id}
+    </foreach>)
+    </delete>
+
+    <!--根据acids删除多款蛋糕-->
+    <delete id="multipleDeleteCakeByAcids" parameterType="java.lang.Integer">
+        DELETE
+        FROM
+        angel_cake
+        WHERE
+        acid
+        IN
+        (<foreach separator="," item="acid" collection="array">
+        #{acid}
+    </foreach>)
+    </delete>
+
+    <!--据多个蛋糕名删除购物车中对应蛋糕-->
+    <delete id="multipleDeleteCakeByCcnames" parameterType="java.lang.String">
+        DELETE FROM
+        cake_cart
+        WHERE
+        ccname
+        IN
+        (<foreach collection="list" item="ccname" separator=",">
+        #{ccname}
+    </foreach>)
+    </delete>
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!--namespace="对应的持久层接口路径"-->
+<mapper namespace="com.cake.shop.mappers.CakeCartMapper">
+    <select id="foundAll" resultType="com.cake.shop.entity.CakeCart">
+    select
+    ccid,ccname,cctype,ccprice,ccsupplier,cuid
+    from
+    cake_cart
+    </select>
+
+    <insert id="insertIntoOneCake">
+    insert into cake_cart
+    (ccname,cctype,ccprice,ccsupplier,cuid)
+    values
+    (#{ccname},#{cctype},#{ccprice},#{ccsupplier},#{cuid})
+    </insert>
+
+    <delete id="deleByCcid">
+        delete from cake_cart where ccid=#{ccid}
+    </delete>
+
+    <select id="seleByCuid" resultType="com.cake.shop.entity.CakeCart">
+        SELECT
+        ccid,ccname,cctype,ccprice,ccsupplier,cuid
+        FROM
+        cake_cart
+        WHERE
+        cuid=#{cuid}
+    </select>
+
+    <select id="seleByCcid" resultType="com.cake.shop.entity.CakeCart">
+        SELECT
+        ccid,ccname,cctype,ccprice,ccsupplier,cuid
+        FROM
+        cake_cart
+        WHERE
+        ccid=#{ccid}
+    </select>
+
+    <!--批量插入-->
+    <insert id="bulkInsertCart">
+        insert into cake_cart
+        (ccname,cctype,ccprice,ccsupplier,cuid)
+        values
+        <foreach collection="cakes" item="cake" separator=",">
+            (#{cake.ccname},#{cake.cctype},#{cake.ccprice},#{cake.ccsupplier},#{cake.cuid})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByCcName">
+        DELETE FROM cake_cart WHERE ccname=#{ccname}
+    </delete>
+
+    <!--依据一个cuid和多个ccid删除多行数据-->
+    <delete id="delByOneCuidAndMultiCcid">
+        DELETE FROM
+        cake_cart
+        WHERE
+        ccid
+        IN (<foreach collection="ccids" item="ccid" separator=",">
+                #{ccid}
+        </foreach>)
+        AND
+        cuid=#{cuid}
+    </delete>
+
+    <!--根据多个cuid删除对应数据-->
+    <delete id="deleteCartByUids" parameterType="java.lang.Integer">
+        DELETE
+        FROM
+        cake_cart
+        WHERE
+        cuid
+        IN(<foreach collection="array" item="cuid" separator=",">
+            #{cuid}
+        </foreach>)
+    </delete>
+</mapper>

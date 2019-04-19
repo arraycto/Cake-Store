@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="javascriptapi/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <title>蛋糕商城首页</title>
+    <style type="text/css">
+        .home-link {
+            padding-right: 28px;
+        }
+    </style>
+</head>
+<body>
+
+<div style="text-align: center;">
+    <h2>欢迎光临蛋糕商城首页!</h2>
+</div>
+<br>
+<br>
+<div style="text-align: center;">
+    <span>
+    <a href="login.html" class="home-link">会员登录</a>
+
+    <a href="register.html" class="home-link">注册会员</a>
+
+    <a href="Information.HTML" class="home-link">个人设置</a>
+
+    <a href="cakeVariety.html" class="home-link">品种分类</a>
+
+    <a href="allCakeInfo.html" class="home-link">全部蛋糕</a>
+
+    <a href="mycart.html" class="home-link">蛋糕篮子</a>
+
+    <a href="archonLogin.html" class="home-link">管理登录</a>
+
+    </span>
+</div>
+<br>
+<br>
+<div style="text-align: center;">
+    <form id="command_form">
+        <input type="text" id="search_sth" name="requirement">
+        <button type="submit" id="btn">搜索</button>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $("#btn").click(function () {
+        var url = "/angel_cake/search_border/";
+        var data = $("#command_form").serialize();
+        console.log(data);
+        $.ajax({
+            "url": url,
+            "type": "POST",
+            "data": data,
+            "dataType": "json",
+            "success": function (results) {
+                if (results.state == 200) {
+                    var list = results.data;
+                    if (list != null) {
+                        var returnLink = '<a href="home_page.html">返回首页</a><br><br>';
+                        var multiButton = "<button id='multi_AddCart' onclick='btnAdd()'>加入购物车</button>";
+                        for (var i = 0; i < list.length; i++) {
+
+                            var doc = '<table border="2" width="720" cellspacing="0"><tbody><tr>' +
+                                '<td><input type="checkbox" class="target_cake" value="#{acid}"></td>' +
+                                '<td colspan="4">名称:#{cakename}</td>' +
+                                '<td colspan="4">类型:#{caketype}</td>' +
+                                '<td colspan="4">价格(元):#{price}</td>' +
+                                '<td colspan="4">产家:#{supplier}</td>' +
+                                '<td colspan="4">现存:#{amount}</td>' +
+                                '<td colspan="4">' +
+                                '<a onclick="add(#{acid})" href="javascript:void(0)">添入篮子(1份)</a></td>' +
+                                '</tr></tbody></table>';
+                            doc = doc.replace(/#{acid}/g, list[i].acid);
+                            doc = doc.replace(/#{cakename}/g, list[i].cakename);
+                            doc = doc.replace(/#{caketype}/g, list[i].caketype);
+                            doc = doc.replace(/#{price}/g, list[i].price);
+                            doc = doc.replace(/#{supplier}/g, list[i].supplier);
+
+                            doc = doc.replace(/#{amount}/g, list[i].amount);
+                            document.writeln("<br>" + doc + "<br>");
+                        }
+                        document.writeln(returnLink + "<br>");
+                        document.writeln("<br>" + multiButton);
+                    } else {
+                        document.write("无相应结果" + '<br><br><a href="home_page.html">返回首页</a><br><br>')
+                    }
+                } else {
+                    alert(results.message);
+                }
+            },
+            "error": function () {
+            }
+        });
+    });
+
+    function add(acid) {
+        var url = "/cake_cart/" + acid + "/add/";
+        $.ajax({
+            "url": url,
+            "type": "POST",
+            "dataType": "json",
+            "success": function (j) {
+                if (j.state == 200) {
+                    alert("加入购物车成功.");
+                    location.reload();
+                } else {
+                    alert(j.message);
+                }
+            }
+        });
+    }
+
+    var arry = [];
+
+    function btnAdd() {
+        var url = "/cake_cart/volume_increase/";
+        var ids = $('input[class="target_cake"]:checked');
+        if (ids.length < 1) {
+            alert('请先选择1件');
+            return;
+        }
+
+        ids.each(function () {
+            arry.push(this.value);
+        });
+        console.log(arry);
+
+        $.ajax({
+            "url": url,
+            "dataType": "json",
+            "type": "POST",
+            "data": {"acids": arry.join(",")},
+            "success": function (r) {
+                if (r.state == 200) {
+                    alert("加入购物车成功");
+                    location.reload();
+                } else {
+                    alert(r.message);
+                    return;
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

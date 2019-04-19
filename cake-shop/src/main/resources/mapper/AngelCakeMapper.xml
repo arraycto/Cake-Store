@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!--映射持久层接口-->
+<mapper namespace="com.cake.shop.mappers.AngelCakeMappers">
+
+    <select id="selectAll" resultType="com.cake.shop.entity.AngelCake">
+    SELECT
+    acid,cakename,caketype,price,supplier,amount
+    FROM
+    angel_cake
+    </select>
+
+    <select id="selectByAcid" resultType="com.cake.shop.entity.AngelCake">
+     SELECT
+     acid,cakename,caketype,price,supplier,amount
+     FROM
+     angel_cake
+     WHERE
+     acid=#{acid}
+    </select>
+
+    <update id="modifyAmountByAcid">
+    update angel_cake set amount=#{amount} where acid=#{acid}
+    </update>
+
+    <!--查询蛋糕的种类去重-->
+    <select id="selectDistinctCakeType" resultType="com.cake.shop.entity.AngelCake">
+        select distinct caketype from angel_cake
+    </select>
+
+    <!--根据类型查询返回该类型下的全部商品及信息-->
+    <select id="foundByCakeType" resultType="com.cake.shop.entity.AngelCake">
+        SELECT
+        acid,cakename,caketype,price,supplier,amount
+        FROM
+        angel_cake
+        WHERE
+        caketype=#{cakeType}
+    </select>
+
+    <select id="selectBlurry" resultType="com.cake.shop.entity.AngelCake">
+        SELECT
+        acid , cakename ,caketype , price , supplier , amount
+        FROM
+        angel_cake
+        WHERE
+        cakename LIKE CONCAT('%',#{term},'%')
+        OR
+        supplier LIKE CONCAT('%',#{term},'%')
+        OR
+        caketype LIKE CONCAT('%',#{term},'%')
+    </select>
+
+    <select id="selectByCakeName" resultType="com.cake.shop.entity.AngelCake">
+    select acid,cakename,caketype,price,supplier,amount from angel_cake
+    where
+    cakename=#{cakename}
+    </select>
+
+    <!--同时根据多个acid查询出相应结果-->
+    <select id="multiSelectByAcid" resultType="com.cake.shop.entity.AngelCake">
+        SELECT
+        acid,cakename,caketype,price,supplier,amount
+        FROM
+        angel_cake
+        WHERE
+        acid
+        IN (
+        <foreach collection="array" item="acid" separator=",">
+            #{acid}
+        </foreach>
+        )
+    </select>
+
+    <!--根据多个acid,批量更新`各自`蛋糕的数量-->
+    <update id="volumeUpdateAmountByAcid">
+        UPDATE
+        angel_cake
+        SET
+        amount = CASE acid
+        <foreach collection="list" item="cakes" index="i">
+            WHEN #{cakes.acid}
+            THEN #{cakes.amount}
+        </foreach>
+        END
+        WHERE
+        acid
+        IN (
+        <foreach collection="list" item="cakes" separator=",">
+            #{cakes.acid}
+        </foreach>)
+    </update>
+
+    <select id="countIdByCakename" resultType="java.lang.Integer">
+         SELECT COUNT(acid) FROM angel_cake WHERE cakename=#{cakename}
+    </select>
+</mapper>

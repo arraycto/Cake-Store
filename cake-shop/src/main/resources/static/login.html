@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login in</title>
+    <script src="javascriptapi/jquery-1.9.1.min.js" type="text/javascript"></script>
+</head>
+<body>
+
+<div id="login-area" style="text-align: center;">
+
+    <h2>会员登录</h2>
+
+    <!--表单开始-->
+    <form id="form-login" class="form-horizontal" role="form">
+        <!--用户名-->
+        <div class="form-group">
+            <label for="my_name" class="control-label">名字：</label>
+            <div class="col">
+                <input type="text" name="name" class="form-control" id="my_name" placeholder="请输入用户名">
+            </div>
+        </div>
+        <!--密码-->
+        <div class="form-group">
+            <label for="password" class="control-label">密码：</label>
+            <div class="col">
+                <input type="text" name="password" class="form-control" id="password" placeholder="请输入密码">
+            </div>
+        </div>
+        <br><br>
+        <!--提交按钮-->
+        <div class="form-group">
+            <label class="control-label"></label>
+            <div class="col">
+                <input id="btn-login" class="btn-primary" type="button" value="登录"/>
+                <br><br>
+                <span class="pull-right"><small>还没有账号?</small><a href="register.html">注册</a></span>
+            </div>
+        </div>
+
+    </form>
+    <br>
+    <br>
+    <br>
+    <a href="home_page.html">返回主页</a>
+</div>
+</body>
+
+<script type="text/javascript">
+    $("#btn-login").click(function () {
+        var url = "/customers/c_login";
+        var data = $("#form-login").serialize();
+        $.ajax({
+            "url": url,
+            "data": data,
+            "type": "POST",
+            "dataType": "json",
+            "success": function (json) {
+                if (json.state == 200) {
+                    alert("登录成功！");
+                    console.log("json.data.id=" + json.data.id);
+                    console.log("json.data.name=" + json.data.name);
+                    location.href="allCakeInfo.html";
+                } else {
+                    alert(json.message);
+                }
+            }
+        });
+    });
+</script>
+
+</html>

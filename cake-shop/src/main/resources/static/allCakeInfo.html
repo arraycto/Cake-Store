@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="javascriptapi/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <title>蛋糕商品详情页</title>
+    <style type="text/css">
+        .table-striped {
+            border-color: white;
+            margin-left: 50px;
+        }
+
+        .div-table {
+            text-align: center;
+            padding-left: 200px;
+        }
+
+        td, th {
+            border: 1px solid green;
+        }
+
+        th {
+            background-color: green;
+            color: white;
+        }
+
+        td {
+            background-color: #fffb88;
+        }
+
+        #together-commit{
+            margin-right: 310px;
+        }
+        .t_link{
+            padding-right: 28px;
+        }
+        caption{
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div style="text-align: center">
+        <span>
+        <a href="home_page.html" class="t_link">返回主页</a>
+
+        <a href="mycart.html" class="t_link">前往我的蛋糕篮子</a>
+
+        <a href="Information.HTML" class="t_link">个人设置中心</a>
+        </span>
+    </div>
+    <br><br>
+    <div class="div-table">
+        <!--地址显示-->
+        <table class="table-striped" cellspacing="0" cellpadding="0" border="1" width="750">
+            <caption>蛋糕列表</caption>
+            <thead>
+            <tr>
+                <th>勾选 <input type="checkbox" onclick="choseCheck()"></th>
+                <th>名称</th>
+                <th>种类</th>
+                <th>价格</th>
+                <th>供应商</th>
+                <th>现存</th>
+                <th colspan="3">操作</th>
+
+            </tr>
+            </thead>
+            <tbody id="cake-list">
+            <tr>
+                <td>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <br><br>
+    <div>
+        <button id="together-commit">放进篮子</button>
+    </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        showCakeList();
+    });
+
+    function showCakeList() {
+        var url = "/angel_cake/show_all_cake";
+        $.ajax({
+            "url": url,
+            "type": "GET",
+            "dataType": "json",
+            "success": function (f) {
+
+                $("#cake-list").empty();
+                var list = f.data;
+
+                for (var i = 0; i < list.length; i++) {
+                    var html = '<tr><td>' +
+                        '<input type="checkbox" class="choice-item" value="#{acid}">' +
+                        '</td>'
+                        + '<td>#{cakename}</td>'
+                        + '<td>#{caketype}</td>'
+                        + '<td>#{price}</td>'
+                        + '<td>#{supplier}</td>'
+                        + '<td>#{amount}</td>'
+                        + '<td><a href="javascript:void(0)" onclick="addCart(#{acid})"><span class="fa-edit"></span>加入购物车(1份)</a></td>'
+                        + '</tr>';
+
+                    html = html.replace(/#{acid}/g, list[i].acid);
+                    html = html.replace(/#{cakename}/g, list[i].cakename);
+                    html = html.replace(/#{caketype}/g, list[i].caketype);
+                    html = html.replace(/#{price}/g, list[i].price);
+                    html = html.replace(/#{supplier}/g, list[i].supplier);
+                    html = html.replace(/#{amount}/g, list[i].amount);
+
+                    $("#cake-list").append(html);
+                }
+
+                $(".add-def:eq(0)").hide();
+            }
+        });
+    }
+
+    var isCheckAll = false;
+    var arr = [];
+
+    function choseCheck() {
+        if (isCheckAll) {
+            console.log("取消:" + isCheckAll);
+            $("input[type='checkbox']").each(function () {
+                this.checked = false;
+            });
+            isCheckAll = false;
+        } else {
+            console.log("全选:" + isCheckAll);
+            $("input[type='checkbox']").each(function () {
+                this.checked = true;
+            });
+            isCheckAll = true;
+
+            $("input[class='choice-item']").each(function () {
+                arr.push(this.value);
+            });
+            console.log(arr);
+            arr = [];
+        }
+    }
+
+    function addCart(acid) {
+        var url = "/cake_cart/" + acid + "/add/";
+        $.ajax({
+            "url": url,
+            "type": "POST",
+            "dataType": "json",
+            "success": function (j) {
+                if (j.state == 200) {
+                    alert("加入购物车成功");
+                    $('input[class="choice-item"]').attr('checked',false);
+                    location.reload();
+                } else {
+                    alert(j.message);
+                }
+            }
+        });
+    }
+
+    $('#together-commit').click(function () {
+        var url = "/cake_cart/volume_increase/";
+        var ids = $('input[class="choice-item"]:checked');
+        if (ids.length < 1) {
+            alert('请先选择1件');
+            return;
+        }
+
+        ids.each(function () {
+            arr.push(this.value);
+        });
+        console.log(arr);
+
+        $.ajax({
+            "url": url,
+            "dataType": "json",
+            "type": "POST",
+            "data": {"acids": arr.join(",")},
+            "success": function (r) {
+                if (r.state == 200) {
+                    alert("加入购物车成功");
+                    $('input[class="choice-item"]').attr('checked',false);
+                    location.reload();
+                } else {
+                    alert(r.message);
+                    // location.reload();
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

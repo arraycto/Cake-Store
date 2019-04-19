@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="javascriptapi/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <meta charset="UTF-8">
+    <title>修改库存</title>
+    <style type="text/css">
+        .cake_para{
+            background-color: yellow;
+        }
+    </style>
+</head>
+<body>
+    <div style="text-align: center">
+        <h1>改动蛋糕存货量</h1>
+        <br><br><br><br><br>
+        <form id="form-amount">
+            蛋糕ID(不可改):
+            <input type="text" id="cake_id" name="acid"
+                   class="cake_para" readonly="readonly">
+            <br><br>
+            蛋糕名称(不可改):
+            <input type="text" id="cake_name" name="cakename"
+                   class="cake_para" readonly="readonly">
+            <br><br>
+            蛋糕数量:
+            <input type="text" id="cake_amount" name="amount" class="amount_para">
+            <br><br>
+            <input type="button" id="btn_commit" value="确认变动">
+        </form>
+        <br><br><br>
+        <a href="operation.html">返回管理页面</a>
+    </div>
+</body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        previewPage();
+    });
+    
+    function previewPage() {
+        var url = '/consuls/editor/';
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            success: function (rr) {
+                if (rr.state == 200) {
+                    $('#cake_id').val(rr.data.acid);
+                    $('#cake_name').val(rr.data.cakename);
+                    $('#cake_amount').val(rr.data.amount)
+                } else {
+                    alert(rr.message)
+                }
+            }
+        })
+    }
+    
+    $('#btn_commit').click(function () {
+        var cData = $('#form-amount').serialize();
+        var url = '/consuls/modified_amount/';
+
+        $.ajax({
+            url: url,
+            data: cData,
+            type: 'POST',
+            dataType: 'json',
+            success: function (rr) {
+                if (rr.state == 200) {
+                    alert('修改成功');
+                    location.href = 'operation.html';
+                } else {
+                    alert(rr.message)
+                }
+            }
+        })
+    });
+</script>
+</html>

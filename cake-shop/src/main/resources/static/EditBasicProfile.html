@@ -1,0 +1,137 @@
+<!-- EditBasicProfile.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="javascriptapi/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <style type="text/css">
+        #user_name {
+            background-color: gold;
+        }
+    </style>
+</head>
+<body>
+<div style="text-align: center;">
+    <h3>完善个人资料</h3>
+    <br><br>
+    <form id="personal_profile">
+        <p>
+            <label>用户名: </label>
+            <input type="text" name="name" id="user_name">
+        </p>
+
+        <p>
+            <label>电话号码: </label>
+            <input type="text" name="phone" id="user_phone" maxlength="18">
+        </p>
+
+        <p>
+            <label>出生日期: </label>
+            <input type="date" name="birth" id="birth_day">
+        </p>
+
+        <p>
+        <div>
+            <label>性别: </label>
+            <label><input type="radio" name="gender" value="0" id="gender_secret">保密</label>
+
+            <label><input type="radio" name="gender" value="1" id="gender_male">男</label>
+
+            <label><input type="radio" name="gender" value="2" id="gender_female">女</label>
+        </div>
+        </p>
+
+        <p>
+            <label>地址:</label>
+            <input type="text" name="address" id="user_address">
+        </p>
+        <br>
+        <input type="button" value="确认修改" id="iamOk">
+    </form>
+    <br>
+    <br>
+    <a href="Information.HTML">返回前页</a>
+</div>
+</body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var url = "/customers/prev_exhibition/";
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            type: 'GET',
+            success: function (rr) {
+                if (rr.state == 200) {
+                    console.log(rr.data);
+                    $('#user_name').val(rr.data.name);
+                    $('#user_phone').val(rr.data.phone);
+
+                    //出生日期
+                    var born = rr.data.birth;
+                    var index = born.indexOf("T");
+                    born = born.substring(0,index);
+                    if (rr.data.birth == null || rr.data.birth == '') {
+                        $('#birth_day').val('1500-01-01');
+                    } else {
+                        $('#birth_day').val(born);
+                    }
+
+                    //地址
+                    if (rr.data.address == null || rr.data.address == '') {
+                        $('#user_address').val('');
+                    } else {
+                        $('#user_address').val(rr.data.address);
+                    }
+
+                    //性别
+                    var gender = rr.data.gender;
+                    console.log(gender);
+                    switch (gender) {
+                        case 0:
+                            $("#gender_secret").attr("checked", "checked");
+                            break;
+                        case 1:
+                            $("#gender_male").attr("checked", "checked");
+                            break;
+                        case 2:
+                            $("#gender_female").attr("checked", "checked");
+                            break;
+                    }
+
+                }
+            }
+        })
+    });
+
+    $('#iamOk').click(function () {
+        var username = $('#user_name').val();
+        var mobile = $('#user_phone').val();
+
+        if (username == null || mobile == null || username == '' || mobile == '') {
+            alert('用户名和电话两项必填');
+            return;
+        }
+
+        var url = '/customers/vary_profile/';
+        var data = $("#personal_profile").serialize();
+        console.log(data);
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function (rr) {
+                if (rr.state == 200) {
+                    alert('修改资料成功');
+                    location.href = 'Information.HTML';
+                } else {
+                    alert(rr.message);
+                }
+            }
+        })
+    });
+
+</script>
+</html>

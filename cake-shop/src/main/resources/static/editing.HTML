@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<script src="javascriptapi/jquery-1.9.1.min.js" type="text/javascript"></script>
+<head>
+    <title></title>
+</head>
+<style type="text/css">
+    #angel_cake_id {
+        background-color: Yellow;
+    }
+</style>
+<body>
+<div style="text-align: center;">
+    <h2>修改蛋糕设定</h2>
+    <br><br><br>
+
+    <form id="cake_setting">
+        蛋糕ID(不可改):
+        <input type="text" id="angel_cake_id" name="acid"
+               class="cake_para" readonly="readonly">
+        <br><br>
+        修改名称: <input type="text" name="cakename" class="cake_para" id="cname">
+        <br><br>
+        修改类型: <input type="text" name="caketype" class="cake_para" id="ctype">
+        <br><br>
+        修改价格: <input type="text" name="price" class="cake_para" id="cprice">
+        <br><br>
+        修改供应商: <input type="text" name="supplier" class="cake_para" id="csupplier">
+        <br><br>
+        修改数量: <input type="text" name="amount" class="cake_para" id="camount">
+        <br><br>
+        <input type="button" id="btn_ok" value="确认">
+    </form>
+    <br><br><br>
+    <a href="operation.html">返回管理页面</a>
+</div>
+</body>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        showEditPreview();
+    });
+
+    function showEditPreview() {
+        var url = '/consuls/editor/';
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            success: function (rr) {
+                if (rr.state == 200) {
+                    $('#angel_cake_id').val(rr.data.acid);
+                    $('#cname').val(rr.data.cakename);
+                    $('#ctype').val(rr.data.caketype);
+                    $('#cprice').val(rr.data.price);
+                    $('#csupplier').val(rr.data.supplier);
+                    $('#camount').val(rr.data.amount)
+                } else {
+                    alert(rr.message)
+                }
+            }
+        })
+    }
+
+    //点击发送编辑数据给后台
+    $('#btn_ok').click(function () {
+        var eData = $('#cake_setting').serialize();
+        var url = '/consuls/true_edit/';
+
+        $.ajax({
+            url: url,
+            data: eData,
+            type: 'POST',
+            dataType: 'json',
+            success: function (rr) {
+                if (rr.state == 200) {
+                    alert('修改成功');
+                    location.href = 'operation.html';
+                } else {
+                    alert(rr.message)
+                }
+            }
+        })
+    })
+
+</script>
+</html>

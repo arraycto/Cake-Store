@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS cake default charset utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS cakes default charset utf8 COLLATE utf8_general_ci;
 
 
 #
@@ -9,7 +9,7 @@ create table customer(
   `phone` char(30) NOT NULL COMMENT '电话',
   `birth` date DEFAULT NULL COMMENT '出生年月日',
   `gender` int(3) DEFAULT '0' COMMENT '0-保密,1-男,2-女',
-  `cancel_status` int(3) NOT NULL DEFAULT '1' COMMENT '注销状态,0 注销,1 未注销',
+  `cancel_status` int(3) NOT NULL DEFAULT '1' COMMENT '注销状态,0注销,1未注销',
   `address` varchar(60) DEFAULT NULL COMMENT '地址',
    PRIMARY KEY (`id`),
    UNIQUE KEY `name` (`name`)
@@ -35,7 +35,7 @@ CREATE TABLE `angel_cake` (
   `account` varchar(20) NOT NULL COMMENT '账号',
   `cspassword` varchar(32) NOT NULL COMMENT '密码',
   PRIMARY KEY (`csid`),
-  UNIQUE KEY (`account`)
+  UNIQUE KEY `account` (`account`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

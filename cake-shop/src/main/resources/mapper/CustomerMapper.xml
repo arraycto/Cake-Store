@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!--namespace="对应的持久层接口路径"-->
+<mapper namespace="com.cake.shop.mappers.CustomerMappers">
+
+    <insert id="insertAnCustomer">
+        INSERT INTO
+        customer
+        (
+        name,
+        password,
+        phone,
+        cancel_status,
+        birth,
+        gender,
+        address
+        )
+        VALUES (
+        #{name},
+        #{password},
+        #{phone},
+        #{cancelStatus},
+        #{birth},
+        #{gender},
+        #{address}
+        )
+    </insert>
+
+    <select id="selectCustomerByName" resultType="com.cake.shop.entity.Customer">
+         SELECT
+         id,name,
+         password,
+         cancel_status AS cancelStatus,
+         phone,
+         address
+         FROM
+         customer
+         WHERE
+         name=#{name}
+    </select>
+
+    <select id="selectAll" resultType="com.cake.shop.entity.Customer">
+        SELECT
+        id,
+        name,
+        password,
+        phone,
+        birth,
+        gender,
+        cancel_status AS cancelStatus,
+        address
+        FROM
+        customer
+    </select>
+
+    <select id="selectById" resultType="com.cake.shop.entity.Customer">
+        SELECT
+        id,
+        name,
+        password,
+        phone,
+        birth,
+        gender,
+        cancel_status AS cancelStatus,
+        address
+        FROM
+        customer
+        WHERE
+        id=#{id}
+    </select>
+
+    <update id="updateFileInfoById">
+        UPDATE
+        customer
+        SET
+        name=#{name},
+        phone=#{phone},
+        birth=#{birth},
+        gender=#{gender},
+        address=#{address}
+        WHERE
+        id=#{id}
+    </update>
+
+    <!--统计匹配户名的行数-->
+    <select id="countIdByName" resultType="java.lang.Integer">
+        SELECT
+        COUNT(id)
+        FROM
+        customer
+        WHERE
+        name=#{name}
+    </select>
+
+    <select id="countIdByPhone" resultType="java.lang.Integer">
+        SELECT
+        COUNT(id)
+        FROM
+        customer
+        WHERE
+        phone=#{phone}
+    </select>
+
+    <update id="updatePasswordById">
+        UPDATE
+        customer
+        SET
+        password=#{password}
+        WHERE
+        id=#{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM customer WHERE id=#{id}
+    </delete>
+
+    <select id="foundBatchDataByIds" resultType="com.cake.shop.entity.Customer">
+         SELECT
+         id,name,
+         password,
+         cancel_status AS cancelStatus,
+         phone,
+         address
+         FROM
+         customer
+         WHERE
+         id
+         IN(<foreach collection="array" item="id" separator=",">
+             #{id}
+         </foreach>)
+    </select>
+</mapper>
