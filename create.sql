@@ -29,7 +29,7 @@ CREATE TABLE `angel_cake` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-#管理
+#管理员
  CREATE TABLE `consul` (
   `csid` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `account` varchar(20) NOT NULL COMMENT '账号',
