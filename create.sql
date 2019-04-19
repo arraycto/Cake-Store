@@ -1,6 +1,5 @@
 CREATE DATABASE IF NOT EXISTS cakes default charset utf8 COLLATE utf8_general_ci;
 
-
 #
 create table customer(
   `id` int(11) NOT NULL AUTO_INCREMENT,
