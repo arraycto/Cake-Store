@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS cakes default charset utf8 COLLATE utf8_general_ci;
 
 
-#
+#用户
 create table customer(
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL COMMENT '名字',
@@ -16,7 +16,7 @@ create table customer(
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-#
+#蛋糕
 CREATE TABLE `angel_cake` (
   `acid` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `cakename` varchar(50) NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE `angel_cake` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-#
+#管理
  CREATE TABLE `consul` (
   `csid` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `account` varchar(20) NOT NULL COMMENT '账号',
@@ -39,7 +39,7 @@ CREATE TABLE `angel_cake` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-#
+#购物车
 CREATE TABLE `cake_cart` (
   `ccid` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `ccname` varchar(50) NOT NULL,
