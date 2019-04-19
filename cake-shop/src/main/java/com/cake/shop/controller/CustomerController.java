@@ -62,10 +62,9 @@ public class CustomerController extends BaseController {
         return new ResponseResult<Customer>(SUCCESS, customer);
     }
 
-    /**
-     * vary 变更,变化
-     */
+  
     /*
+     * vary 变更,变化
      * @param customer
      * @param session
      * @return
