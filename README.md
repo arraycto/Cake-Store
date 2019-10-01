@@ -23,7 +23,7 @@ service分层,利用业务逻辑处理mapper分层返还的数据,以实现用�
 + 选用框架:SpringBoot 2.1.4
 + 开发环境:Windows10
 + 数据库:MySQL 8.0
-+ 开发与测试工具:IntelliJ IDEA IU+Sublime Text+Opera
++ 开发与测试工具:IntelliJ IDEA
 + JDK版本:1.8
 
 ##### 应用技术
